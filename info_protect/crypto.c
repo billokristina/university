@@ -150,6 +150,18 @@ long long simple_num_generate(int bits)
     return num;
 }
 
+// Функция Диффи-Хеллмана
+long long diffie_hellman(long long p, long long g, long long X_A, long long X_B)
+{
+    long long Y_A = mod_pow(g, X_A, p);
+    long long Y_B = mod_pow(g, X_B, p);
+    long long K_A = mod_pow(Y_B, X_A, p);
+    long long K_B = mod_pow(Y_A, X_B, p);
+    printf("Общий ключ (A): %lld\n", K_A);
+    printf("Общий ключ (B): %lld\n", K_B);
+    return K_A;
+}
+
 int main()
 {
     srand(time(NULL));
@@ -163,6 +175,7 @@ int main()
         printf("2. тест простоты Ферма\n");
         printf("3. алгоритм Евклида\n");
         printf("4. дискретный логарифм (Baby Step Giant Step)\n");
+        printf("5. Диффи-Хеллман (общий ключ)\n");
         printf("0. exit\n\n");
 
         scanf("%d", &choice);
@@ -271,6 +284,46 @@ int main()
             }
             printf("\n");
             break;
+
+        case 5:
+        {
+            printf("Диффи-Хеллман: выбрать режим ввода\n");
+            printf("1. Ввод p, g, X_A, X_B с клавиатуры\n");
+            printf("2. Генерация p, g, X_A, X_B внутри функции\n\n");
+            int dh_mode;
+            scanf("%d", &dh_mode);
+            long long p, g, X_A, X_B;
+            if (dh_mode == 1)
+            {
+                printf("Введите простое число p: ");
+                scanf("%lld", &p);
+                printf("Введите генератор g: ");
+                scanf("%lld", &g);
+                printf("Введите секрет X_A: ");
+                scanf("%lld", &X_A);
+                printf("Введите секрет X_B: ");
+                scanf("%lld", &X_B);
+            }
+            else if (dh_mode == 2)
+            {
+                p = simple_num_generate(20);
+                g = 2; // Можно заменить на генерацию генератора
+                X_A = rand() % (p - 2) + 1;
+                X_B = rand() % (p - 2) + 1;
+                printf("Сгенерированы параметры:\n");
+                printf("p = %lld\n", p);
+                printf("g = %lld\n", g);
+                printf("X_A = %lld\n", X_A);
+                printf("X_B = %lld\n", X_B);
+            }
+            else
+            {
+                printf("Неверный выбор режима.\n\n");
+                break;
+            }
+            diffie_hellman(p, g, X_A, X_B);
+            break;
+        }
 
         case 0:
             return 0;
